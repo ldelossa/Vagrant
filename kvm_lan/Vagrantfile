@@ -1,0 +1,56 @@
+Vagrant.configure(2) do |config|
+  config.vm.define :saltmaster01 do |saltmaster01| 
+    saltmaster01.vm.box = "centos/7"
+    saltmaster01.vm.network :private_network, :ip => "10.1.1.10"
+    saltmaster01.vm.hostname = "saltmaster01"
+    
+    saltmaster01.vm.provision "shell",
+      inline: "curl -L https://bootstrap.saltstack.com -o /tmp/install_salt.sh"
+    saltmaster01.vm.provision "shell",
+      inline: "sh /tmp/install_salt.sh -M -P git v2015.8.3"
+    saltmaster01.vm.provision "shell",
+      inline: "sudo rm -rf /srv; sudo git clone https://github.com/ldelossa/srv.git /srv"
+  end
+
+  config.vm.define :dns01 do |dns01| 
+    dns01.vm.box = "centos/7"
+    dns01.vm.network :private_network, :ip => "10.1.1.2"
+    dns01.vm.hostname = "dns01"
+    
+    dns01.vm.provision "shell",
+      inline: "echo '10.1.1.10 salt' >> /etc/hosts" 
+    dns01.vm.provision "shell",
+      inline: "curl -L https://bootstrap.saltstack.com -o /tmp/install_salt.sh" 
+    dns01.vm.provision "shell",
+      inline: "sh /tmp/install_salt.sh -P git v2015.8.3" 
+  end
+
+  config.vm.define :dockerhost01 do |dockerhost01|
+    dockerhost01.vm.box = "centos/7"
+    dockerhost01.vm.network :private_network, :ip => "10.1.1.11"
+    dockerhost01.vm.hostname = "dockerhost01"
+    
+    dockerhost01.vm.provision "shell",
+      path: "scripts/bootstrap_salt_minion.sh"
+    dockerhost01.vm.provision "shell",
+      path: "scripts/set_dns.sh"
+
+    dockerhost01.vm.provider :libvirt do |domain|
+        domain.memory = 2048
+        domain.cpus = 2
+      end
+    end 
+
+  config.vm.define :jenkins01 do |jenkins01|
+    jenkins01.vm.box = "centos/7"
+    jenkins01.vm.network :private_network, :ip => "10.1.1.12"
+    jenkins01.vm.hostname = "jenkins01"
+
+    jenkins01.vm.provision "shell",
+      path: "scripts/bootstrap_salt_minion.sh"
+    jenkins01.vm.provision "shell",
+      path: "scripts/set_dns.sh"
+    end
+
+end
+
