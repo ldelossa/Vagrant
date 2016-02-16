@@ -1,0 +1,13 @@
+#!/bin/bash
+
+echo "  config.vm.define ${1} do |${1}|
+    ${1}.vm.box = "centos/7"
+    ${1}.vm.network :private_network, :ip => ${2}
+    ${1}.vm.hostname = ${1}
+    ${1}.vm.provision "shell",
+      path: "scripts/bootstrap_salt_minion.sh"
+    ${1}.vm.provision "shell",
+      path: "scripts/set_dns.sh"
+    end"
+
+
