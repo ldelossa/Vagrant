@@ -1,1 +1,1 @@
-{"rsync":{"/home/vagrant/sync":{"type":"rsync","guestpath":"/home/vagrant/sync","hostpath":"/home/ldelossa/Vagrant/default","disabled":false,"owner":"vagrant","group":"vagrant"}}}
+{"rsync":{"/home/vagrant/sync":{"type":"rsync","guestpath":"/home/vagrant/sync","hostpath":"/home/ldelossa/Vagrant/kvm_lan","disabled":false,"owner":"vagrant","group":"vagrant"}}}
